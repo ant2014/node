@@ -109,6 +109,7 @@
             'src/win/winapi.h',
             'src/win/winsock.c',
             'src/win/winsock.h',
+            'src/win/trans.c',
           ],
           'link_settings': {
             'libraries': [
@@ -156,6 +157,7 @@
             'src/unix/timer.c',
             'src/unix/tty.c',
             'src/unix/udp.c',
+            'src/unix/trans.c',
           ],
           'link_settings': {
             'libraries': [ '-lm' ],

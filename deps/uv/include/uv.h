@@ -168,6 +168,7 @@ extern "C" {
   XX(WORK, work)                                                              \
   XX(GETADDRINFO, getaddrinfo)                                                \
   XX(GETNAMEINFO, getnameinfo)                                                \
+  XX(TRANS_C, trans_c)                                                        \
 
 typedef enum {
 #define XX(code, _) UV_ ## code = UV__ ## code,
@@ -224,6 +225,7 @@ typedef struct uv_connect_s uv_connect_t;
 typedef struct uv_udp_send_s uv_udp_send_t;
 typedef struct uv_fs_s uv_fs_t;
 typedef struct uv_work_s uv_work_t;
+typedef struct uv_trans_c_s  uv_trans_c_t;
 
 /* None of the above. */
 typedef struct uv_cpu_info_s uv_cpu_info_t;
@@ -305,6 +307,7 @@ typedef void (*uv_getnameinfo_cb)(uv_getnameinfo_t* req,
                                   int status,
                                   const char* hostname,
                                   const char* service);
+typedef void (*uv_trans_c_cb) (uv_trans_c_t *req);
 
 typedef struct {
   long tv_sec;
@@ -1081,6 +1084,15 @@ struct uv_fs_s {
   UV_FS_PRIVATE_FIELDS
 };
 
+struct uv_trans_c_s{
+  UV_REQ_FIELDS
+  uv_loop_t* loop;
+  uv_trans_c_cb cb;
+  ssize_t result;
+  void *ptr;
+  UV_TRANS_PRIVATE_FIELDS
+};
+
 UV_EXTERN void uv_fs_req_cleanup(uv_fs_t* req);
 UV_EXTERN int uv_fs_close(uv_loop_t* loop,
                           uv_fs_t* req,
@@ -1402,6 +1414,13 @@ UV_EXTERN int uv_thread_create(uv_thread_t* tid, uv_thread_cb entry, void* arg);
 UV_EXTERN uv_thread_t uv_thread_self(void);
 UV_EXTERN int uv_thread_join(uv_thread_t *tid);
 UV_EXTERN int uv_thread_equal(const uv_thread_t* t1, const uv_thread_t* t2);
+
+//for CPU  intensive  Windows Only
+UV_EXTERN void uv_trans_taskcomplete(uv_loop_t* loop, uv_trans_c_t *req);
+UV_EXTERN void uv_trans_init(uv_loop_t* loop, uv_trans_c_t* req,uv_req_type tans_type, const uv_trans_c_cb cb);
+UV_EXTERN void uv_trans_req_register(uv_loop_t* loop, uv_trans_c_t* req);
+UV_EXTERN void uv_process_trans_c_req(uv_loop_t* loop, uv_trans_c_t* req);
+UV_EXTERN void uv_trans_c_req_cleanup(uv_trans_c_t* req);
 
 /* The presence of these unions force similar struct layout. */
 #define XX(_, name) uv_ ## name ## _t name;

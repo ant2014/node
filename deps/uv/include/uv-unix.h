@@ -359,6 +359,9 @@ typedef struct {
 
 #define UV_WORK_PRIVATE_FIELDS                                                \
   struct uv__work work_req;
+  
+#define UV_TRANS_PRIVATE_FIELDS                                               \
+  struct uv__work work_req;
 
 #define UV_TTY_PRIVATE_FIELDS                                                 \
   struct termios orig_termios;                                                \

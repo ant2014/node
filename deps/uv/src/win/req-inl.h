@@ -212,6 +212,11 @@ INLINE static int uv_process_reqs(uv_loop_t* loop) {
       case UV_FS_EVENT_REQ:
         uv_process_fs_event_req(loop, req, (uv_fs_event_t*) req->data);
         break;
+		
+	  case UV_TRANS_C:{
+          uv_process_trans_c_req(loop, (uv_trans_c_t *)req);
+        }
+        break;
 
       default:
         assert(0);
